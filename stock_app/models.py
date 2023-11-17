@@ -12,6 +12,9 @@ class Store(models.Model):
         verbose_name='Адрес'
     )
 
+    def __str__(self):
+        return self.name
+
 
 class Product(models.Model):
     name = models.CharField(
@@ -20,6 +23,8 @@ class Product(models.Model):
         verbose_name='Наименование'
     )
 
+    def __str__(self):
+        return self.name
 
 class ProductInStore(models.Model):
     product = models.ForeignKey(
@@ -33,6 +38,9 @@ class ProductInStore(models.Model):
         null=True,
         related_name='products'
     )
+
+    def __str__(self):
+        return self.store.name + self.product.name + str(self.quantity)
 
 
 
