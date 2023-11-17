@@ -1,5 +1,3 @@
-from django.contrib.auth.models import AbstractUser
-
 from django.db import models
 
 
@@ -22,6 +20,19 @@ class Product(models.Model):
         verbose_name='Наименование'
     )
 
+
+class ProductInStore(models.Model):
+    product = models.ForeignKey(
+        'Product',
+        on_delete=models.CASCADE
+    )
+    quantity = models.PositiveIntegerField()
+    store = models.ForeignKey(
+        'Store',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='products'
+    )
 
 
 
