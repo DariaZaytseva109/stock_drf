@@ -10,8 +10,13 @@ class StoreAdmin(admin.ModelAdmin):
     ordering = ['name']
 
 
-admin.site.site_header = "Панель администрирования"
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+    list_display_links = ('name', )
+    ordering = ['name']
 
+
+admin.site.site_header = "Панель администрирования"
 admin.site.index_title = "Склады"
 
-admin.site.register(Product)
