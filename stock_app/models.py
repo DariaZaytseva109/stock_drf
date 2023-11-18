@@ -12,6 +12,10 @@ class Store(models.Model):
         verbose_name='Адрес'
     )
 
+    class Meta:
+        verbose_name = 'Склад'
+        verbose_name_plural = 'Склады'
+
     def __str__(self):
         return self.name
 
@@ -23,8 +27,13 @@ class Product(models.Model):
         verbose_name='Наименование'
     )
 
+    class Meta:
+        verbose_name = 'Продукт'
+        verbose_name_plural = 'Продукты'
+
     def __str__(self):
         return self.name
+
 
 class ProductInStore(models.Model):
     product = models.ForeignKey(
@@ -39,8 +48,9 @@ class ProductInStore(models.Model):
         related_name='products'
     )
 
+    class Meta:
+        verbose_name = 'Продукт на складе'
+        verbose_name_plural = 'Продукты на складе'
+
     def __str__(self):
         return self.store.name + self.product.name + str(self.quantity)
-
-
-
