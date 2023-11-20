@@ -38,7 +38,8 @@ class Product(models.Model):
 class ProductInStore(models.Model):
     product = models.ForeignKey(
         'Product',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+
     )
     quantity = models.PositiveIntegerField()
     store = models.ForeignKey(
