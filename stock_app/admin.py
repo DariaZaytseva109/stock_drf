@@ -1,6 +1,19 @@
 from django.contrib import admin
 
-from stock_app.models import Product, Store, ProductInStore
+from stock_app.models import Product, Store, ProductInStore, ApiUser, UserGroup
+
+
+@admin.register(ApiUser)
+class ApiUserAdmin(admin.ModelAdmin):
+    list_display = ('username', 'user_group')
+    list_display_links = ('username', 'user_group')
+    ordering = ['username']
+
+
+@admin.register(UserGroup)
+class UserGroupAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    list_display_links = ('name', )
 
 
 @admin.register(Store)

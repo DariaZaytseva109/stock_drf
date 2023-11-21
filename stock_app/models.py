@@ -1,4 +1,29 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+
+class ApiUser(AbstractUser):
+    user_group = models.ForeignKey(
+        'UserGroup',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='apiusers'
+    )
+
+
+class UserGroup(models.Model):
+    name = models.CharField(
+        unique=True,
+        max_length=100,
+        verbose_name='Тип пользователя'
+    )
+
+    class Meta:
+        verbose_name = 'Тип пользователя'
+        verbose_name_plural = 'Типы пользователя'
+
+    def __str__(self):
+        return self.name
 
 
 class Store(models.Model):
