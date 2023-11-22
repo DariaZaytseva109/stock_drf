@@ -50,13 +50,13 @@ class ProductSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
-class ProductInStoreSerializer(serializers.Serializer):
+class ProductInStoreSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     quantity = serializers.IntegerField()
 
     class Meta:
         model = ProductInStore
-        fields = ['product', 'quantity']
+        fields = ['id', 'product', 'quantity']
         read_only_fields = ['id']
 
 
