@@ -30,29 +30,47 @@ class StoreViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=['put', 'get'],
+        methods=['put'],
         name='Поставить продукты на склад',
         permission_classes=[],
         serializer_class=SimpleProductInStoreSerializer
     )
     def supply(self, request, pk=None):
         store = Store.objects.get(pk=pk)
-        print(store)
-        if request.method == 'GET':
-            return Response({})
         product = Product.objects.get(id=request.data['product'])
-
         quantity = int(request.data['quantity'])
-        print(product, quantity)
         products_in_store = ProductInStore.objects.filter(store=store)
-        print(products_in_store)
         for prod in products_in_store:
-            print(prod.product)
             if prod.product == product:
                 store.add_to_existing_product(prod, quantity)
                 return Response({'status': 'product supplied'})
         store.add_new_product(product, quantity)
-        return Response({'status': 'product added'})
+        return Response({'status': 'new product supplied'})
+
+    @action(
+        detail=True,
+        methods=['put'],
+        name='Забрать продукты со склада',
+        permission_classes=[],
+        serializer_class=SimpleProductInStoreSerializer
+    )
+    def consume(self, request, pk=None):
+        store = Store.objects.get(pk=pk)
+        product = Product.objects.get(id=request.data['product'])
+        quantity = int(request.data['quantity'])
+        products_in_store = ProductInStore.objects.filter(store=store)
+        for prod in products_in_store:
+            if prod.product == product:
+                if prod.quantity < quantity:
+                    return Response({'status': 'insufficient product at store'})
+                elif prod.quantity == quantity:
+                    prod.delete()
+                    return Response({'status': 'product consumed'})
+                else:
+                    prod.quantity = prod.quantity - quantity
+                    prod.save()
+                    return Response({'status': 'product consumed'})
+        return Response({'status': 'no such product'})
 
 
 class UserGroupViewSet(viewsets.ModelViewSet):

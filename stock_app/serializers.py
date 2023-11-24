@@ -47,14 +47,12 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['name']
-        read_only_fields = ['id']
 
 
 class ProductInStoreSerializer(serializers.ModelSerializer):
      class Meta:
         model = ProductInStore
-        fields = ['id', 'product', 'quantity']
-        read_only_fields = ['id']
+        fields = ['product', 'quantity']
 
 
 class ProductInStoreDetailedSerializer(serializers.ModelSerializer):
@@ -63,8 +61,7 @@ class ProductInStoreDetailedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductInStore
-        fields = ['id', 'product', 'quantity', 'store']
-        read_only_fields = ['id']
+        fields = ['product', 'quantity']
 
 
 class StoreSerializer(serializers.ModelSerializer):
