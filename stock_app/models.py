@@ -97,6 +97,5 @@ class ProductInStore(models.Model):
         verbose_name_plural = 'Продукты на складе'
 
     def __str__(self):
-        return f'{self.store.name}: {self.product.name} - {str(self.quantity)} шт.'
-
-
+        return f'{self.store.name}: ' \
+               f'{self.product.name} - {str(self.quantity)} шт.'

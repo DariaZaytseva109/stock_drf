@@ -1,25 +1,19 @@
-from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, generics
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from stock_app.models import Product, Store, UserGroup, \
     ApiUser, ProductInStore
+from stock_app.permissions import IsConsumerPermission, IsSupplierPermission
 from stock_app.serializers import ProductSerializer, StoreSerializer, \
     UserGroupSerializer, UserSerializer, \
-    ProductInStoreSerializer, SimpleProductInStoreSerializer
+    SimpleProductInStoreSerializer
 
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-
-class ProductInStoreViewSet(viewsets.ModelViewSet):
-    queryset = ProductInStore.objects.all()
-    serializer_class = ProductInStoreSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
@@ -32,7 +26,7 @@ class StoreViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=['put'],
         name='Поставить продукты на склад',
-        permission_classes=[],
+        permission_classes=[IsSupplierPermission],
         serializer_class=SimpleProductInStoreSerializer
     )
     def supply(self, request, pk=None):
@@ -51,7 +45,7 @@ class StoreViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=['put'],
         name='Забрать продукты со склада',
-        permission_classes=[],
+        permission_classes=[IsConsumerPermission],
         serializer_class=SimpleProductInStoreSerializer
     )
     def consume(self, request, pk=None):

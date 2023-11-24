@@ -1,6 +1,7 @@
 from rest_framework import serializers, validators
 
-from stock_app.models import Store, Product, ProductInStore, ApiUser, UserGroup
+from stock_app.models import Store, Product, \
+    ProductInStore, ApiUser, UserGroup
 
 
 class UserSerializer(serializers.Serializer):
@@ -37,6 +38,7 @@ class UserSerializer(serializers.Serializer):
 
 class UserGroupSerializer(serializers.ModelSerializer):
     apiusers = UserSerializer(many=True)
+
     class Meta:
         model = UserGroup
         fields = ['name', 'apiusers']
@@ -50,7 +52,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductInStoreSerializer(serializers.ModelSerializer):
-     class Meta:
+    class Meta:
         model = ProductInStore
         fields = ['product', 'quantity']
 
