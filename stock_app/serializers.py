@@ -4,7 +4,7 @@ from stock_app.models import Store, Product, ProductInStore, ApiUser, UserGroup
 
 
 class UserSerializer(serializers.Serializer):
-    username = serializers.CharField(
+    email = serializers.EmailField(
         max_length=20,
         validators=[validators.UniqueValidator(ApiUser.objects.all())]
     )
@@ -12,8 +12,8 @@ class UserSerializer(serializers.Serializer):
     user_group = serializers.CharField()
 
     def update(self, instance, validated_data):
-        if username := validated_data.get("username"):
-            instance.username = username
+        if email := validated_data.get("email"):
+            instance.email = email
         if user_group_id := validated_data.get("user_group"):
             user_group = UserGroup.objects.get(pk=user_group_id)
             instance.user_group = user_group
@@ -27,7 +27,7 @@ class UserSerializer(serializers.Serializer):
         user_group_id = validated_data["user_group"]
         user_group = UserGroup.objects.get(pk=user_group_id)
         user = ApiUser.objects.create(
-            username=validated_data["username"],
+            email=validated_data["email"],
             user_group=user_group
         )
         user.set_password(validated_data["password"])
@@ -51,20 +51,33 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductInStoreSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
-    quantity = serializers.IntegerField()
-
-    class Meta:
+     class Meta:
         model = ProductInStore
         fields = ['id', 'product', 'quantity']
         read_only_fields = ['id']
 
 
+class ProductInStoreDetailedSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+    quantity = serializers.IntegerField()
+
+    class Meta:
+        model = ProductInStore
+        fields = ['id', 'product', 'quantity', 'store']
+        read_only_fields = ['id']
+
+
 class StoreSerializer(serializers.ModelSerializer):
-    products = ProductInStoreSerializer(many=True)
+    products = ProductInStoreDetailedSerializer(many=True)
 
     class Meta:
         model = Store
         fields = ['id', 'name', 'address', 'products']
         read_only_fields = ['id']
 
+
+class SimpleProductInStoreSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductInStore
+        fields = ['product', 'quantity']

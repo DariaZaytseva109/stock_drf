@@ -10,6 +10,9 @@ class ApiUser(AbstractUser):
         related_name='apiusers'
     )
 
+    def __str__(self):
+        return self.email
+
 
 class UserGroup(models.Model):
     name = models.CharField(
@@ -27,6 +30,7 @@ class UserGroup(models.Model):
 
 
 class Store(models.Model):
+
     name = models.CharField(
         max_length=200,
         unique=True,
@@ -42,7 +46,19 @@ class Store(models.Model):
         verbose_name_plural = 'Склады'
 
     def __str__(self):
-        return self.name
+        return f'{self.pk}, {self.name}'
+
+    def add_to_existing_product(self, product_in_store, quantity):
+        new_quantity = quantity + product_in_store.quantity
+        product_in_store.quantity = new_quantity
+        product_in_store.save()
+
+    def add_new_product(self, product, quantity):
+        ProductInStore.objects.create(
+            product=product,
+            quantity=quantity,
+            store=self
+        )
 
 
 class Product(models.Model):
@@ -57,16 +73,18 @@ class Product(models.Model):
         verbose_name_plural = 'Продукты'
 
     def __str__(self):
-        return self.name
+        return f'{self.pk}, {self.name}'
 
 
 class ProductInStore(models.Model):
     product = models.ForeignKey(
         'Product',
         on_delete=models.CASCADE,
-
+        related_name='products'
     )
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(
+        verbose_name='Кол-во на складе'
+    )
     store = models.ForeignKey(
         'Store',
         on_delete=models.SET_NULL,
@@ -79,4 +97,6 @@ class ProductInStore(models.Model):
         verbose_name_plural = 'Продукты на складе'
 
     def __str__(self):
-        return self.store.name + self.product.name + str(self.quantity)
+        return f'{self.store.name}: {self.product.name} - {str(self.quantity)} шт.'
+
+
