@@ -3,13 +3,6 @@ from django.db import models
 
 
 class ApiUser(AbstractUser):
-    username = models.EmailField(
-        "email",
-        unique=True,
-        blank=True,
-        error_messages={
-            "unique": ("A user with that username already exists.")
-        })
     user_group = models.ForeignKey(
         'UserGroup',
         on_delete=models.SET_NULL,
