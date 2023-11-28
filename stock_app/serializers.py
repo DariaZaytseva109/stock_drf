@@ -24,7 +24,6 @@ class UserSerializer(serializers.Serializer):
         return instance
 
     def create(self, validated_data):
-        print(validated_data)
         user_group_id = validated_data["user_group"]
         user_group = UserGroup.objects.get(pk=user_group_id)
         user = ApiUser.objects.create(

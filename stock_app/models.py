@@ -26,7 +26,7 @@ class UserGroup(models.Model):
         verbose_name_plural = 'Типы пользователя'
 
     def __str__(self):
-        return self.name
+        return f'{self.pk}, {self.name}'
 
 
 class Store(models.Model):

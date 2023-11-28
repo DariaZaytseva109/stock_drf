@@ -1,26 +1,24 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from stock_app.models import Product, Store, UserGroup, \
     ApiUser, ProductInStore
-from stock_app.permissions import IsConsumerPermission, IsSupplierPermission
-from stock_app.serializers import ProductSerializer, StoreSerializer, \
-    UserGroupSerializer, UserSerializer, \
-    SimpleProductInStoreSerializer
+from stock_app.permissions import IsConsumerPermission, \
+    IsSupplierPermission
+from stock_app.serializers import ProductSerializer, \
+    StoreSerializer, UserGroupSerializer, \
+    UserSerializer, SimpleProductInStoreSerializer
 
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class StoreViewSet(viewsets.ModelViewSet):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
 
     @action(
         detail=True,
@@ -56,7 +54,9 @@ class StoreViewSet(viewsets.ModelViewSet):
         for prod in products_in_store:
             if prod.product == product:
                 if prod.quantity < quantity:
-                    return Response({'status': 'insufficient product at store'})
+                    return Response(
+                        {'status': 'insufficient product at store'}
+                    )
                 elif prod.quantity == quantity:
                     prod.delete()
                     return Response({'status': 'product consumed'})
@@ -70,11 +70,11 @@ class StoreViewSet(viewsets.ModelViewSet):
 class UserGroupViewSet(viewsets.ModelViewSet):
     queryset = UserGroup.objects.all()
     serializer_class = UserGroupSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class ApiUserViewSet(viewsets.ModelViewSet):
     queryset = ApiUser.objects.all()
+    http_method_names = ['post', 'get']
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
+    authentication_classes = []
+    permission_classes = []
